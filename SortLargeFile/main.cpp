@@ -46,12 +46,55 @@ int partitionAndSortFiles(fstream& inputFile, int runSize) {
 	return numRunWays;
 }
 
+int partition(string* arr, int start, int end)
+{
+
+	string pivot = arr[start];
+
+	int count = 0;
+	for (int i = start + 1; i <= end; i++) {
+		if (arr[i] <= pivot)
+			count++;
+	}
+
+	int pivotIndex = start + count;
+	arr[pivotIndex].swap(arr[start]);
+
+	int i = start, j = end;
+
+	while (i < pivotIndex && j > pivotIndex) {
+
+		while (arr[i] <= pivot) {
+			i++;
+		}
+
+		while (arr[j] > pivot) {
+			j--;
+		}
+
+		if (i < pivotIndex && j > pivotIndex) {
+			arr[i++].swap(arr[j--]);
+		}
+	}
+
+	return pivotIndex;
+}
+
+void quickSort(string* arr, int start, int end)
+{
+	if (start >= end)
+		return;
+	int p = partition(arr, start, end);
+	quickSort(arr, start, p - 1);
+	quickSort(arr, p + 1, end);
+}
 void externalSort(string inputFileName, string outputFileName) {
 	int runSize = 500000;
 
 	fstream inputFile; inputFile.open(inputFileName, ios::in | ios::binary);
 	int numWays = partitionAndSortFiles(inputFile, runSize);
 }
+
 
 int main() {
 	externalSort("test.csv", "sorted_books_rating.csv");
